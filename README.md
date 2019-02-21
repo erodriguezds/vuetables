@@ -12,7 +12,8 @@ DataTable components, inpired in https://datatables.net/, and styled with Bootst
 ( still working on it )
 
 ### Column Actions
-It's very common to have tables/lists with an "actions" column, on which you may perform several actions on the object listed (such as edit, delete, etc). You can easily turn a column into an "Actions" column by simply providing an array of "Action Definition Objects". Below is the list of available field for an Action Definition Objec
+It's very common to have tables/lists with an "actions" column, on which you may perform several actions on the object listed (such as edit, delete, etc). You can easily turn a column into an "Actions" column by simply providing an array of "Action Definition Objects". Below is the list of available field for an Action Definition Object:
+
 | Field | Type | Default |  Required/Mandatory | Description |
 | ----- | ---- | ------- | ----------- | --------------------|
 | visible | bool | true | no | Sets whether the action is visible or not. | 
