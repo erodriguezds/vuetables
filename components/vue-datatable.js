@@ -97,24 +97,6 @@ Vue.component('datatable', {
         pageCount : function(){
             return Math.ceil(this.filteredData.length / this.pageSize);
         },
-        /**
-         * Sorting functions
-         */
-        nullSorter : function(a, b){
-            return 0;
-        },
-        getSorting : function(){
-            const colindex = this.sortState.column;
-            if(colindex === null){
-                return this.nullSorter;
-            }
-            const field = this.columns[colindex].field;
-            const sortFactor = this.sortState.asc ? 1 : -1;
-            return function(a, b){
-
-            }
-
-        },
         filteredData : function(){
             if(this.searchText.length <= 0){
                 return this.data;
@@ -211,33 +193,27 @@ Vue.component('datatable', {
             }
             
         },
-        sortBy : function(colindex){
-            /*const column = this.columns[colindex];
-            column.sortAsc = !column.sortAsc;
-            if(column.sortable !== false){
-                const field = column.field;
-                const sortFactor = ( column.sortAsc ? 1 : -1 );
-                //console.log("Ordenar por: ",field, ", sortFactor: ", sortFactor);
-                return this.rows.map((obj) => obj).sort(function(a,b){
-                    if(typeof a[field] === 'number'){
-                        return (a[field] - b[field]) * sortFactor;
-                    }
-                    return sortFactor * a[field].toString().localeCompare(b[field].toString());
-                });
-            }*/
-        },
-        encodeParams : function(paramsObject){
-            var encodedString = '';
-            for (var prop in paramsObject) {
-                if (paramsObject.hasOwnProperty(prop)) {
-                    if (encodedString.length > 0) {
-                        encodedString += '&';
-                    }
-                    encodedString += encodeURI(prop + '=' + paramsObject[prop]);
-                }
+        getSorting : function(){
+            const colindex = this.sortState.column;
+            if(colindex === null){
+                return function(a, b){
+                    return 0;
+                };
             }
-            return encodedString;
+            const field = this.columns[colindex].field;
+            const sortFactor = this.sortState.asc ? 1 : -1;
+            return function(a, b){
+                if(!isNaN(a[field]) && !isNaN(b[field])){
+                    return (a[field] - b[field]) * sortFactor;
+                }
+                return sortFactor * a[field].toString().localeCompare(b[field].toString());
+            }
         },
+
+        /**
+         * 
+         * AJAX related functions
+         */
         fetchAjaxData : function(){
             var xhr = new XMLHttpRequest();
             if("withCredentials" in xhr){
@@ -268,6 +244,18 @@ Vue.component('datatable', {
                 }
             };
             xhr.send();
+        },
+        encodeParams : function(paramsObject){
+            var encodedString = '';
+            for (var prop in paramsObject) {
+                if (paramsObject.hasOwnProperty(prop)) {
+                    if (encodedString.length > 0) {
+                        encodedString += '&';
+                    }
+                    encodedString += encodeURI(prop + '=' + paramsObject[prop]);
+                }
+            }
+            return encodedString;
         },
         processAjaxResponse : function(data){
 
