@@ -14,7 +14,7 @@ DataTable components, inpired in https://datatables.net/, and styled with Bootst
 ### Column Actions
 It's very common to have tables/lists with an "actions" column, on which you may perform several actions on the object listed (such as edit, delete, etc). You can easily turn a column into an "Actions" column by simply providing an array of "Action Definition Objects":
 
-```JSON
+```javascript
 {
     ...
     columns : [
