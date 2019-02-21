@@ -1,5 +1,5 @@
 # vuetables
-DataTable components, inpired in https://datatables.net/, and styled with Bootstrap 4 classes.
+DataTable components, inpired in https://datatables.net/, and styled with Bootstrap 4 classes and Font-Awesome.
 
 ### Props
 | Prop        | Required/Mandatory | Description           |
