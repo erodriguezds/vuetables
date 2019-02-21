@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My first Vue app</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <script src="https://unpkg.com/vue"></script>
+  <style>
+    .table {
+        table-layout: fixed;
+    }
+    .table td, .table th {
+        overflow: hidden;
+        -webkit-transition: width 2s; /* Safari */
+        transition: width 2s;
+    }
+    .tbody {
+        overflow-y: hidden;
+    }
+    .fancytable .thead {
+        font-weight: bold;
+    }
+    .fancytable .tbody {
+        overflow-y: hidden;
+        transition: height 1s;
+    }
+    .fancytable .tbody .list-group {
+        position: relative;
+        transition: top 0.5s;
+    }
+
+    .fancytable .tbody .list-group .list-group-item {
+        opacity: 1;
+        overflow-y: hidden;
+        transition: height 1s, opacity 1s, padding 1s;
+    }
+    .fancytable .tbody .list-group .list-group-item.filtered {
+        height: 0;
+        opacity: 0;
+        padding: 0;
+    }
+    .flip-list-move {
+        transition: transform 1s;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    {{ message }}
+    <datatable :columns="columns" :rows="rows" ></datatable>
+  </div>
+<script src="components/ft-row.js"></script>
+<script src="components/ft-pager.js"></script>
+
+<script type="text/x-template" id="list-based-datatable">
+    <div class="fancytable container-fluid">
+        <form class="row">
+            <div class="col-8 form-inline">
+                <label for="abc" class="my-1 mr-2">Items per page: </label>
+                <select id="abc" class="custom-select my-1 mr-sm-2" v-model="pageSize">
+                    <option v-for="ps in pageSizes" :value="ps">{{ ps }}</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <div class="pull-right">
+                    <div class="form-group input-sm input-group">
+                        <input v-model="searchText" aria-describedby="addon-right addon-left" placeholder="Search" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="thead">
+            <ul class="list-group" :style="tbodyListStyle">
+                <li class="list-group-item d-flex justify-content-around">
+                    <span v-for="(col, index) in columns" @click="sortBy(index)">{{ col.header }}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="tbody" :style="tbodyContainerStyle">
+            <ul class="list-group" :style="tbodyListStyle">
+                <ft-row v-for="(obj, index) in rows" :key="obj.id" :object="obj" :columns="columns" :position="sortIndex[index]" :search="searchText" ></ft-row>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-sm-12"><dt-pager @page-changed="setCurrentPage" :page-count="pageCount"></dt-pager></div>
+        </div>
+    </div>
+</script>
+<script type="text/x-template" id="table-based-datatable">
+    <div class="dt-wrapper">
+        <table class="table">
+            <thead>
+                <th v-for="col in columns" :style="{ width: ( col.visible ? 'auto' : 0 )}">{{ col.header }}</th>
+            </thead>
+            <tbody>
+                <tr v-for="obj in rows">{{ obj[col.field] }}
+                    <td v-for="col in columns" :style="{ width: ( col.visible ? 'auto' : 0 )}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-6"><dt-pager></dt-pager></div>
+        </div>
+    </div>
+</script>
+  <script>
+Vue.component('datatable', {
+    props: {
+        columns : Array,
+        rows : Array,
+        pageSize : {
+            type : Number,
+            default : 10
+        },
+        pageSizes : {
+            type : Array,
+            default : function(){
+                return [ 3, 5, 10, 25, 50, 100 ];
+            }
+        },
+        sortField : {
+            type : String,
+            default : null
+        }
+    },
+    data : function(){
+        return {
+            currentPage : 1,
+            searchText : "",
+            sortIndex : {},
+            sorting : {
+                field : null,
+                asc : true
+            },
+            pagedData : []
+        }
+    },
+    template: '#list-based-datatable',
+    created : function(){
+        //console.log("Creado! rows: ",this.rows);
+        this.updateSortIndex();
+    },
+    watch: {
+        rows: function (val, oldVal) {
+            console.log("Cambio 'rows' en el componente datatable");
+            this.updateSortIndex();
+        }
+    },
+    computed : {
+        tbodyContainerStyle : function(){
+            return {
+                height : (this.pageSize * 50) + "px",
+            }
+        },
+        tbodyListStyle : function(){
+            return {
+                top : ((this.currentPage - 1) * this.pageSize * -50) + "px"
+            }
+        },
+        /*filteredItems : function(){
+            if(this.searchText.length > 0){
+                c
+            } else {
+                return this.rows;
+            }
+        },*/
+        sortPosition : function(){
+
+        },
+        pageCount : function(){
+            return Math.ceil(this.rows.length / this.pageSize);
+        },
+        visibleColumns : function(){
+            return this.columns.filter(col => (col.visible === undefined || col.visible));
+        },
+    },
+    methods : {
+        updateSortIndex : function(){
+            for(let c in this.columns){
+                const column = this.columns[c];
+                var sorted = this.sortBy(c);
+                //console.log(sorted.map((obj) => obj[column.field]));
+                this.sortIndex[column.field] = [];
+                for(let r in this.rows){
+                    this.sortIndex[column.field][r] = sorted.indexOf(this.rows[r]);
+                }
+            }
+            console.log("Listo el sortIndex, y asi quedo: ",this.sortIndex);
+        },
+        setCurrentPage : function(n){
+            this.currentPage = n;
+            //console.log("Seteando current page en el datatable", n);
+        },
+        getCurrentPageItems : function(){
+
+        },
+        sortBy : function(colindex){
+            const column = this.columns[colindex];
+            column.sortAsc = !column.sortAsc;
+            if(column.sortable !== false){
+                const field = column.field;
+                const sortFactor = ( column.sortAsc ? 1 : -1 );
+                //console.log("Ordenar por: ",field, ", sortFactor: ", sortFactor);
+                return this.rows.map((obj) => obj).sort(function(a,b){
+                    if(typeof a[field] === 'number'){
+                        return (a[field] - b[field]) * sortFactor;
+                    }
+                    return sortFactor * a[field].toString().localeCompare(b[field].toString());
+                });
+            }
+        },
+    }
+})
+
+const _data = {
+    message: 'Hello Vue!',
+    columns : [
+        { header: "ID", field: "id", visible : true },
+        { header: "Nombre completo", field: "name", visible : true },
+        { header: "Edad", field: "age", visible : true }
+    ],
+    rows: [
+        { id : 1, name: "Eduardo Rodriguez", age: 35 },
+        { id : 2, name: "Alexandra Duno", age: 33 },
+        { id : 3, name: "Natalia Rodriguez", age: 5 },
+        { id : 4, name: "Cristian Housen", age: 5 },
+        { id : 5, name: "Matias Beretta", age: 5 },
+        { id : 6, name: "Javier Badaracco", age: 5 },
+        { id : 7, name: "Andres Boffa", age: 5 },
+        { id : 8, name: "Natalia Rodriguez", age: 5 }
+    ]
+}
+
+var app = new Vue({
+    el: '#app',
+    data: _data,
+    
+})
+</script>
+</body>
+</html>
