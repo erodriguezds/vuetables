@@ -39,7 +39,6 @@ Vue.component('datatable', {
                 <select id="abc" class="custom-select my-1 mr-sm-2" v-model="pageSize">
                     <option v-for="ps in pageSizes" :value="ps">{{ ps }}</option>
                 </select>
-                <dt-advanced-filter :columns="columns"></dt-advanced-filter>
             </div>
             <div class="col-4">
                 <div class="pull-right">
