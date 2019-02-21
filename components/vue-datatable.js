@@ -173,7 +173,7 @@ Vue.component('datatable', {
             if(col.type === "actions" || col.actions !== undefined){
                 var btnHtml = ""
                 for(const action of col.actions){
-                    btnHtml += `<a`;
+                    btnHtml += `<a href=""`;
                     if(action.attr){
                         for(const a in action.attr){
                             var attrValue = action.attr[a];
@@ -183,7 +183,11 @@ Vue.component('datatable', {
                             btnHtml += " " + this.toKebabCase(a) + '="' + attrValue + '"';
                         }
                     }
-                    btnHtml += ` class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>`;
+                    btnHtml += ` class="btn btn-sm btn-primary">`;
+                    if(typeof action.icon === "string"){
+                        btnHtml += `<i class="fa fa-${action.icon}"></i>`;
+                    }
+                    btnHtml += `</a>`;
                 }
                 return btnHtml;
                 //return `<a href="#" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>`;
