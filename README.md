@@ -1,6 +1,12 @@
 # BS4 DataTables for Vue
 DataTable components, inpired in https://datatables.net/, and styled with Bootstrap 4 classes and Font-Awesome.
 
+# How to use
+Clone (or downdload) this repo to your development workspace, and customize any of the examples to your needs.
+Just keep it mind that the components rely on the following dependencies:
+* Vue(JS) 2.x (duh!)
+* Bootstrap 4.x
+
 ### Props
 | Prop        | Required/Mandatory | Description           |
 | ------------- |:-------------:| -------- |

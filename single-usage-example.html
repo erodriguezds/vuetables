@@ -4,45 +4,8 @@
   <title>Vue-DataTables the easy way</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/vue-datatables.css">
   <script src="https://unpkg.com/vue"></script>
-  <style>
-    .table {
-        table-layout: fixed;
-    }
-    .table td, .table th {
-        overflow: hidden;
-        -webkit-transition: width 2s; /* Safari */
-        transition: width 2s;
-    }
-    .tbody {
-        overflow-y: hidden;
-    }
-    .fancytable .thead {
-        font-weight: bold;
-    }
-    .fancytable .tbody {
-        overflow-y: hidden;
-        transition: height 1s;
-    }
-    .fancytable .tbody .list-group {
-        position: relative;
-        transition: top 0.5s;
-    }
-
-    .fancytable .tbody .list-group .list-group-item {
-        opacity: 1;
-        overflow-y: hidden;
-        transition: height 1s, opacity 1s, padding 1s;
-    }
-    .fancytable .tbody .list-group .list-group-item.filtered {
-        height: 0;
-        opacity: 0;
-        padding: 0;
-    }
-    .flip-list-move {
-        transition: transform 1s;
-    }
-  </style>
 </head>
 <body>
   <div id="app" class="container">
@@ -67,55 +30,55 @@
         </div>
       </div>
   </div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-<script src="https://getbootstrap.com/docs/4.1/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-<script src="components/dt-th.js"></script>
-<script src="components/ft-row.js"></script>
-<script src="components/ft-pager.js"></script>
-<script src="components/dt-advanced-filter.js"></script>
-<script src="components/vue-datatable.js"></script>
 
+  <!-- Required by Bootstrap. So sorry for including jQuery -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://getbootstrap.com/docs/4.1/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+  <!-- The Vue components-->
+  <script src="js/vue-components/dt-pager.js"></script>
+  <script src="js/vue-components/vue-datatable.js"></script>
+
+  <!-- And lastly: our app code -->
   <script>
-
-const _data = {
-    columns : [
-        { header: "ID", field: "id", visible : true, searchable : false },
-        { header: "Nombre completo", field: "name", visible : true },
-        { header: "Edad", field: "age", visible : true },
-        {
-            header: "Actions",
-            type : "actions",
-            field: "age",
-            visible : true,
-            actions : [
-                {
-                  icon : "edit",
-                  attr : {
-                      dataToggle : "modal",
-                      dataTarget : "#mi-modal"
+  const _data = {
+      columns : [
+          { header: "ID", field: "id", visible : true, searchable : false },
+          { header: "Full Name", field: "name", visible : true },
+          { header: "Age", field: "age", visible : true },
+          {
+              header: "Actions",
+              type : "actions",
+              field: "age",
+              visible : true,
+              actions : [
+                  {
+                    icon : "edit",
+                    attr : {
+                        dataToggle : "modal",
+                        dataTarget : "#mi-modal"
+                    }
                   }
-                }
-            ]
-     },
+              ]
+      },
 
-    ],
-    rows: [
-        { id : 1, name: "Eduardo Rodriguez", age: 35 },
-        { id : 2, name: "Alexandra Duno", age: 33 },
-        { id : 3, name: "Natalia Rodriguez", age: 5 },
-        { id : 4, name: "Cristian Housen", age: 5 },
-        { id : 5, name: "Matias Beretta", age: 5 },
-        { id : 6, name: "Javier Badaracco", age: 5 },
-        { id : 7, name: "Andres Boffa", age: 5 },
-        { id : 8, name: "Natalia Rodriguez", age: 5 }
-    ]
-}
+      ],
+      rows: [
+          { id : 1, name: "Eduardo Rodriguez", age: 35 },
+          { id : 2, name: "Alexandra Duno", age: 33 },
+          { id : 3, name: "Natalia Rodriguez", age: 5 },
+          { id : 4, name: "Cristian Housen", age: 35 },
+          { id : 5, name: "Matias Beretta", age: 26 },
+          { id : 6, name: "Javier Badaracco", age: 35 },
+          { id : 7, name: "Andres Boffa", age: 38 },
+      ]
+  }
 
-var app = new Vue({
-    el: '#app',
-    data: _data,
-})
-</script>
+  var app = new Vue({
+      el: '#app',
+      data: _data,
+  })
+  </script>
 </body>
 </html>
