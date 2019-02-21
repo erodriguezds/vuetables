@@ -1,2 +1,2 @@
 # vuetables
-DataTable components inpired in https://datatables.net/
+Easy to integrate DataTable components, inpired in https://datatables.net/
